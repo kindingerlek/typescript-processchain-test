@@ -1,43 +1,60 @@
+import { PipelineData } from "./pipeline";
+
+export enum ProcessStatus {
+  pending = 'pending',
+  started = 'started',
+  processing = 'processing',
+  finishing = 'finishing',
+  done = 'done',
+  failed = 'failed',
+}
+
+export interface ProcessData<T> {
+  status: ProcessStatus;
+  data: T;
+}
+
+
 /** This interface is used to define a process in a {@link Pipeline} */
 export default interface Process {
   /**
+   * (Optional implemention)
    * This will be called **before** the {@link onProcess} function;
    *
-   * (Optional implemention)
-   * @param processData
+   * @param pipelineData
    */
-  onStart?(processData: any): Promise<void>;
+  onStart?(pipelineData: PipelineData<any>): Promise<void>;
 
   /**
+   * (Optional implemention)
    * This will be called **after** the {@link onProcess} function;
    *
-   * (Optional implemention)
-   * @param processData
+   * @param pipelineData
    */
-  onFinish?(processData: any): Promise<void>;
+  onFinish?(pipelineData: PipelineData<any>): Promise<void>;
 
   /**
+   * (Optional implemention)
    * This will be called **when error occours** on the {@link onProcess} function;
    *
-   * (Optional implemention)
-   * @param processData
+   * @param pipelineData
    */
-  onError?(error: any, processData: any): Promise<void>;
+  onError?(error: any, pipelineData: PipelineData<any>): Promise<void>;
 
   /**
+   * (Optional implemention)
    * This will be called **after** the {@link onFinish} function or the {@link onError}, even the {@link onProcess} throws an error
    *
-   * (Optional implemention)
-   * @param processData
+   * @param pipelineData
    */
-  onFinally?(processData: any): Promise<void>;
+  onFinally?(pipelineData: PipelineData<any>): Promise<void>;
 
   
   /**
+   * (Mandatory implemention)
    * This is where you define your logic of process.
    *
-   * (Mandatory implemention)
-   * @param processData
+   * @param pipelineData
    */
-  onProcess(processData: any): Promise<any>;
+  onProcess(pipelineData: PipelineData<any>): Promise<any>;
 }

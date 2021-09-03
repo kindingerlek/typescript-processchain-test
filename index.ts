@@ -1,6 +1,6 @@
 import { Injectable, InjectProperty } from "./dependencyInjector";
 
-import Pipeline from "./processChain/pipeline";
+import Pipeline, { PipelineData } from "./processChain/pipeline";
 import Process from "./processChain/process";
 
 
@@ -19,10 +19,10 @@ class ProviderB {
 }
 
 class OperationOne implements Process {
-  async onStart(processData: any) {
+  async onStart(processData: PipelineData<any>) {
     console.log("Iniciando processo 1");
   }
-  async onProcess(processData: any) {
+  async onProcess(processData: PipelineData<any>) {
     console.log("Processando 1");
 
     return 1;
@@ -33,7 +33,7 @@ class OperationTwo implements Process {
   @InjectProperty(ProviderA)
   private provider? : ProviderA;
 
-  async onProcess(processData: any) {
+  async onProcess(processData: PipelineData<any>) {
     console.log("Processando 2");
 
     if(this.provider)
@@ -41,7 +41,7 @@ class OperationTwo implements Process {
 
     return 'processo 2';
   }
-  async onFinish(processData: any) {
+  async onFinish(processData: PipelineData<any>) {
     console.log("Finalizado processo 2");
   }
 }
@@ -50,7 +50,7 @@ class OperationThree implements Process {
   @InjectProperty(ProviderB)
   private provider?: ProviderB;
 
-  async onProcess(processData: any) {
+  async onProcess(processData: PipelineData<any>) {
     console.log("Processando 3");
 
     return ['123','1', this.provider?.getValue()]

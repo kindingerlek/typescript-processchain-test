@@ -1,13 +1,16 @@
 
-import Process from "./process";
+import Process, { ProcessData } from "./process";
 import ProxyProcess from "./proxyProcess";
+
+export type PipelineData<T> = { [key: string]: ProcessData<T> };
+
 
 export default class Pipeline {
   private processesList: ProxyProcess[] = [];
-  private pipeData: any = {};
+  private pipeData: PipelineData<any> = {};
 
   register(handler: new () => Process) {
-    const proxyHandler = new ProxyProcess(handler);
+    const proxyHandler = new ProxyProcess(handler, this.pipeData);
     const lastHandler = this.processesList[this.processesList.length - 1];
 
     if (lastHandler) lastHandler.next = proxyHandler;
