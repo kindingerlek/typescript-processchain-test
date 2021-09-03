@@ -1,3 +1,6 @@
+import { Injectable, InjectProperty } from "./dependencyInjector";
+
+
 /** This interface is used to define a process in a {@link Pipeline} */
 interface IProcess {
   /**
@@ -136,6 +139,28 @@ class Pipeline {
   }
 }
 
+@Injectable()
+class ProviderA {
+  constructor(){
+
+  }
+
+  getValue(){
+    return 'Value from ProviderA';
+  }
+}
+
+@Injectable()
+class ProviderB {
+  constructor(){
+
+  }
+
+  getValue(){
+    return 'Value from ProviderB';
+  }
+}
+
 class OperationOne implements IProcess {
   async onStart(processData: any) {
     console.log("Iniciando processo 1");
@@ -148,8 +173,15 @@ class OperationOne implements IProcess {
 }
 
 class OperationTwo implements IProcess {
+
+  @InjectProperty(ProviderA)
+  private provider? : ProviderA;
+
   async onProcess(processData: any) {
     console.log("Processando 2");
+
+    if(this.provider)
+      console.log('Retorno do provider no OperationTwo' + this.provider.getValue())
 
     return 'processo 2';
   }
@@ -159,10 +191,14 @@ class OperationTwo implements IProcess {
 }
 
 class OperationThree implements IProcess {
+
+  @InjectProperty(ProviderB)
+  private provider?: ProviderB;
+
   async onProcess(processData: any) {
     console.log("Processando 3");
 
-    return ['123','1']
+    return ['123','1', this.provider?.getValue()]
   }
 }
 
