@@ -9,43 +9,43 @@ export default class ProxyProcess implements Process {
   concreteProcessInstance: Process;
 
   /** The class definition which implements {@link Process}*/
-  handlerClass: new () => Process;
+  processClass: new () => Process;
 
-  constructor(realHandler: new () => Process) {
-    this.handlerClass = realHandler;
-    this.concreteProcessInstance = new realHandler();
+  constructor(concreteProcess: new () => Process) {
+    this.processClass = concreteProcess;
+    this.concreteProcessInstance = new concreteProcess();
   }
 
   async onStart?(processData: any) {
     if (!this.concreteProcessInstance.onStart) return;
 
-    console.log(`${this.handlerClass.name} - Chamando onStart`);
+    console.log(`${this.processClass.name} - Chamando onStart`);
     this.concreteProcessInstance.onStart(processData);
-    console.log(`${this.handlerClass.name} - onStart Finalizado`);
+    console.log(`${this.processClass.name} - onStart Finalizado`);
   }
 
   async onFinish?(processData: any) {
     if (!this.concreteProcessInstance.onFinish) return;
 
-    console.log(`${this.handlerClass.name} - Chamando onFinish`);
+    console.log(`${this.processClass.name} - Chamando onFinish`);
     this.concreteProcessInstance.onFinish(processData);
-    console.log(`${this.handlerClass.name} - onFinish Finalizado`);
+    console.log(`${this.processClass.name} - onFinish Finalizado`);
   }
 
   async onError?(error: any, processData: any) {
     if (!this.concreteProcessInstance.onError) return;
 
-    console.log(`${this.handlerClass.name} - Chamando onError`);
+    console.log(`${this.processClass.name} - Chamando onError`);
     this.concreteProcessInstance.onError(error, processData);
-    console.log(`${this.handlerClass.name} - onError Finalizado`);
+    console.log(`${this.processClass.name} - onError Finalizado`);
   }
 
   async onFinally?(processData: any) {
     if (!this.concreteProcessInstance.onFinally) return;
 
-    console.log(`${this.handlerClass.name} - Chamando onFinally`);
+    console.log(`${this.processClass.name} - Chamando onFinally`);
     this.concreteProcessInstance.onFinally(processData);
-    console.log(`${this.handlerClass.name} - onFinally Finalizado`);
+    console.log(`${this.processClass.name} - onFinally Finalizado`);
   }
 
   async onProcess(processData: any) {
@@ -53,14 +53,14 @@ export default class ProxyProcess implements Process {
       console.log(`------------------------------------------------`);
       if (this.onStart) this.onStart(processData);
 
-      console.log(`${this.handlerClass.name} - Chamando onProcess`);
+      console.log(`${this.processClass.name} - Chamando onProcess`);
       const result = await this.concreteProcessInstance.onProcess(processData);
 
       // Append the result of process to pipeline data
       processData = Object.assign(processData, {
-        [this.handlerClass.name]: result,
+        [this.processClass.name]: result,
       });
-      console.log(`${this.handlerClass.name} - onProcess Finalizou!`);
+      console.log(`${this.processClass.name} - onProcess Finalizou!`);
 
       if (this.onFinish) this.onFinish(processData);
 
