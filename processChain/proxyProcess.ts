@@ -1,16 +1,17 @@
-import { IProcess } from ".";
+import Process from "./process";
 
-export default class ProxyProcess implements IProcess {
-  /** The next Process that implements {@link IProcess}*/
+
+export default class ProxyProcess implements Process {
+  /** The next Process that implements {@link Process}*/
   next?: ProxyProcess;
 
-  /** The concrete instance of object that implements {@link IProcess}*/
-  concreteProcessInstance: IProcess;
+  /** The concrete instance of object that implements {@link Process}*/
+  concreteProcessInstance: Process;
 
-  /** The class definition which implements {@link IProcess}*/
-  handlerClass: new () => IProcess;
+  /** The class definition which implements {@link Process}*/
+  handlerClass: new () => Process;
 
-  constructor(realHandler: new () => IProcess) {
+  constructor(realHandler: new () => Process) {
     this.handlerClass = realHandler;
     this.concreteProcessInstance = new realHandler();
   }
@@ -49,6 +50,7 @@ export default class ProxyProcess implements IProcess {
 
   async onProcess(processData: any) {
     try {
+      console.log(`------------------------------------------------`);
       if (this.onStart) this.onStart(processData);
 
       console.log(`${this.handlerClass.name} - Chamando onProcess`);

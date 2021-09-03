@@ -1,11 +1,12 @@
-import { IProcess } from ".";
+
+import Process from "./process";
 import ProxyProcess from "./proxyProcess";
 
 export default class Pipeline {
   private processesList: ProxyProcess[] = [];
   private pipeData: any = {};
 
-  register(handler: new () => IProcess) {
+  register(handler: new () => Process) {
     const proxyHandler = new ProxyProcess(handler);
     const lastHandler = this.processesList[this.processesList.length - 1];
 

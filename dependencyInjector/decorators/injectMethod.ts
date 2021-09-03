@@ -1,3 +1,12 @@
+/*
+    Created by: Lucas Ernesto Kindinger
+    Date: 2021
+
+    References: 
+    - https://source.coveo.com/2016/02/04/typescript-injection-decorator/
+    - https://www.danielcornock.co.uk/articles/dependency-injection-typescript-decorators
+*/
+
 import Injector, { ClassDefinition } from "../index";
 
 
