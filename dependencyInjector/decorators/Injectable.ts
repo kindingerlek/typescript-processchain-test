@@ -12,7 +12,7 @@ import Injector from "..";
 /**
  * Make the class able to be instanciated when program starts, and injected on property
  */
-export function Injectable(args?: any[]): Function {
+export function injectable(args?: any[]): Function {
     return function (target: new () => object): void {
         Injector.register(target, new target());
     };

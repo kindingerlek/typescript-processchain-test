@@ -13,7 +13,7 @@ import Injector, { ClassDefinition } from "../index";
  * @param keys The class that needs to be injected
  * @returns 
  */
-export function InjectProperty(keys: ClassDefinition) {
+export function injectProperty(keys: ClassDefinition) {
     return (target: any, key: string) => {
         target[key] = Injector.getRegistered(keys);
     };

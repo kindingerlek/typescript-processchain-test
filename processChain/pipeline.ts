@@ -1,9 +1,7 @@
-
 import Process, { ProcessData } from "./process";
 import ProxyProcess from "./proxyProcess";
 
 export type PipelineData<T> = { [key: string]: ProcessData<T> };
-
 
 export default class Pipeline {
   private processesList: ProxyProcess[] = [];
@@ -19,12 +17,11 @@ export default class Pipeline {
   }
 
   async start() {
-    const firstProcess = this.processesList[0];
+    const firstProcess = this.processesList.shift();
 
     if (!firstProcess) throw new Error("No process are registered to this ProcessChain");
 
-    let result = await firstProcess.onProcess(this.pipeData);
-    // this.pipeData = Object.assign(this.pipeData, result);
+    await firstProcess.onProcess(this.pipeData);
   }
 
   getResult() {

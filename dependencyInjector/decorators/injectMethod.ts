@@ -10,7 +10,7 @@
 import Injector, { ClassDefinition } from "../index";
 
 
-export function InjectMethod(...keys: ClassDefinition[]) {
+export function injectMethod(...keys: ClassDefinition[]) {
     return (target: any, key: string, descriptor: any) => {
         var originalMethod = descriptor.value;
         descriptor.value = function (...args: any[]) {

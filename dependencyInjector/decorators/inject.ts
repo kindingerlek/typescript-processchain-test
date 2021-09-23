@@ -7,8 +7,8 @@
     - https://www.danielcornock.co.uk/articles/dependency-injection-typescript-decorators
 */
 
-import { InjectMethod } from "./injectMethod";
-import { InjectProperty } from "./injectProperty";
+import { injectMethod } from "./injectMethod";
+import { injectProperty } from "./injectProperty";
 import { ClassDefinition } from "../index";
 
 
@@ -19,7 +19,7 @@ import { ClassDefinition } from "../index";
  * @return An instance of the specified class;
  */
 
-export function Inject(...keys: ClassDefinition[]){
+export function inject(...keys: ClassDefinition[]){
     return function (...args: any[]) {
         var params = [];
         for (var i = 0; i < args.length; i++) {
@@ -28,9 +28,9 @@ export function Inject(...keys: ClassDefinition[]){
         
         switch (params.length) {
             case 2:
-                return InjectProperty(keys[0])//.apply(this, args);
+                return injectProperty(keys[0])//.apply(this, args);
             case 3:
-                return InjectMethod(...keys)//.apply(this, args);
+                return injectMethod(...keys)//.apply(this, args);
             default:
                 throw new Error("Decorators are not valid here!");
         }

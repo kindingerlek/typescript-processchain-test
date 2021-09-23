@@ -7,10 +7,10 @@
     - https://www.danielcornock.co.uk/articles/dependency-injection-typescript-decorators
 */
 
-import { Inject } from './decorators/inject';
-import { Injectable } from './decorators/injectable';
-import { InjectMethod } from './decorators/injectMethod';
-import { InjectProperty } from './decorators/injectProperty';
+import { inject } from './decorators/inject';
+import { injectMethod } from './decorators/injectMethod';
+import { injectProperty } from './decorators/injectProperty';
+import { injectable } from './decorators/injectable';
 
 export type ClassDefinition = new () => object;
 
@@ -39,8 +39,8 @@ export default class Injector {
 }
 
 export {
-    Inject,
-    Injectable,
-    InjectMethod,
-    InjectProperty,
+    inject,
+    injectable,
+    injectMethod,
+    injectProperty,
 }

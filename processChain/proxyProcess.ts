@@ -20,13 +20,20 @@ export default class ProxyProcess implements Process {
     pipelineData = Object.assign(pipelineData, {
       [this.processClass.name]: {
         status: ProcessStatus.pending,
-        data: undefined
+        creationDate: new Date(),
       } as ProcessData<any>,
     });
   }
 
+  
+  private getThisProcessData(pipelineData: PipelineData<any>) {
+    return pipelineData[this.processClass.name];
+  }
+
   async onStart?(pipelineData: PipelineData<any>) {
-    pipelineData[this.processClass.name].status = ProcessStatus.started;
+    const processData = this.getThisProcessData(pipelineData)
+    processData.status = ProcessStatus.started;
+    processData.processDate = new Date();
 
     if (!this.concreteProcessInstance.onStart) return;
 
@@ -35,8 +42,10 @@ export default class ProxyProcess implements Process {
     console.log(`${this.processClass.name} - onStart Finalizado`);
   }
 
+
   async onFinish?(pipelineData: PipelineData<any>) {
-    pipelineData[this.processClass.name].status = ProcessStatus.finishing;
+    const processData = this.getThisProcessData(pipelineData)
+    processData.status = ProcessStatus.finishing;
     if (!this.concreteProcessInstance.onFinish) return;
 
     console.log(`${this.processClass.name} - Chamando onFinish`);
@@ -45,7 +54,9 @@ export default class ProxyProcess implements Process {
   }
 
   async onError?(error: any, pipelineData: PipelineData<any>) {
-    pipelineData[this.processClass.name].status = ProcessStatus.failed;
+    const processData = this.getThisProcessData(pipelineData)
+
+    processData.status = ProcessStatus.failed;
     if (!this.concreteProcessInstance.onError) return;
 
     console.log(`${this.processClass.name} - Chamando onError`);
@@ -54,7 +65,13 @@ export default class ProxyProcess implements Process {
   }
 
   async onFinally?(pipelineData: PipelineData<any>) {
-    pipelineData[this.processClass.name].status = ProcessStatus.done;
+    const processData = this.getThisProcessData(pipelineData)
+    
+    processData.finishDate = new Date();
+    
+    if(processData.status != ProcessStatus.failed)
+      processData.status = ProcessStatus.done;
+
     if (!this.concreteProcessInstance.onFinally) return;
 
     console.log(`${this.processClass.name} - Chamando onFinally`);
@@ -63,7 +80,8 @@ export default class ProxyProcess implements Process {
   }
 
   async onProcess(pipelineData: PipelineData<any>) {
-    pipelineData[this.processClass.name].status = ProcessStatus.processing;
+    const processData = this.getThisProcessData(pipelineData)
+    processData.status = ProcessStatus.processing;
     try {
       console.log(`------------------------------------------------`);
       if (this.onStart) this.onStart(pipelineData);
@@ -71,7 +89,7 @@ export default class ProxyProcess implements Process {
       console.log(`${this.processClass.name} - Chamando onProcess`);
       const result = await this.concreteProcessInstance.onProcess(pipelineData);
 
-      pipelineData[this.processClass.name].data = result;
+      processData.data = result;
 
 
       console.log(`${this.processClass.name} - onProcess Finalizou!`);
@@ -80,6 +98,7 @@ export default class ProxyProcess implements Process {
 
       if (this.next) await this.next.onProcess(pipelineData);
     } catch (err: any) {
+      console.error(err);
       if (this.onError) this.onError(err, pipelineData);
     } finally {
       if (this.onFinally) this.onFinally(pipelineData);

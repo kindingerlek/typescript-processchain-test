@@ -11,7 +11,10 @@ export enum ProcessStatus {
 
 export interface ProcessData<T> {
   status: ProcessStatus;
-  data: T;
+  creationDate: Date;
+  processDate?: Date;
+  finishDate?: Date;
+  data?: T;
 }
 
 

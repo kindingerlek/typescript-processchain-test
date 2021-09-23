@@ -1,20 +1,20 @@
-import { Injectable, InjectProperty } from "./dependencyInjector";
+import { injectable, injectProperty } from "./dependencyInjector";
 
 import Pipeline, { PipelineData } from "./processChain/pipeline";
 import Process from "./processChain/process";
+import { requireProcess } from "./processChain/requireProcess";
 
-
-@Injectable()
+@injectable()
 class ProviderA {
-  getValue(){
-    return 'Value from ProviderA';
+  getValue() {
+    return "Value from ProviderA";
   }
 }
 
-@Injectable()
+@injectable()
 class ProviderB {
-  getValue(){
-    return 'Value from ProviderB';
+  getValue() {
+    return "Value from ProviderB";
   }
 }
 
@@ -30,16 +30,15 @@ class OperationOne implements Process {
 }
 
 class OperationTwo implements Process {
-  @InjectProperty(ProviderA)
-  private provider? : ProviderA;
+  @injectProperty(ProviderA)
+  private provider?: ProviderA;
 
   async onProcess(processData: PipelineData<any>) {
     console.log("Processando 2");
 
-    if(this.provider)
-      console.log('Retorno do provider no OperationTwo' + this.provider.getValue())
+    if (this.provider) console.log("Retorno do provider no OperationTwo" + this.provider.getValue());
 
-    return 'processo 2';
+    return "processo 2";
   }
   async onFinish(processData: PipelineData<any>) {
     console.log("Finalizado processo 2");
@@ -47,13 +46,14 @@ class OperationTwo implements Process {
 }
 
 class OperationThree implements Process {
-  @InjectProperty(ProviderB)
+  @injectProperty(ProviderB)
   private provider?: ProviderB;
 
+  @requireProcess(OperationOne, OperationTwo)
   async onProcess(processData: PipelineData<any>) {
     console.log("Processando 3");
 
-    return ['123','1', this.provider?.getValue()]
+    return ["123", "1", this.provider?.getValue()];
   }
 }
 
@@ -61,14 +61,13 @@ async function run() {
   let pipe = new Pipeline();
 
   pipe.register(OperationOne);
-  pipe.register(OperationTwo);
+  //pipe.register(OperationTwo);
   pipe.register(OperationThree);
-  
+
   await pipe.start();
 
-  console.log(pipe.getResult())
-  
-  console.log('Done');
+  console.log("Done");
+  console.log("Results: ", pipe.getResult());
 }
 
 run();
