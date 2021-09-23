@@ -37,9 +37,9 @@ export default class ProxyProcess implements Process {
 
     if (!this.concreteProcessInstance.onStart) return;
 
-    console.log(`${this.processClass.name} - Chamando onStart`);
+    console.log(`${this.processClass.name} - Chamando onStart()`);
     this.concreteProcessInstance.onStart(pipelineData);
-    console.log(`${this.processClass.name} - onStart Finalizado`);
+    console.log(`${this.processClass.name} - onStart() Finalizado`);
   }
 
 
@@ -48,9 +48,9 @@ export default class ProxyProcess implements Process {
     processData.status = ProcessStatus.finishing;
     if (!this.concreteProcessInstance.onFinish) return;
 
-    console.log(`${this.processClass.name} - Chamando onFinish`);
+    console.log(`${this.processClass.name} - Chamando onFinish()`);
     this.concreteProcessInstance.onFinish(pipelineData);
-    console.log(`${this.processClass.name} - onFinish Finalizado`);
+    console.log(`${this.processClass.name} - onFinish() Finalizado`);
   }
 
   async onError?(error: any, pipelineData: PipelineData<any>) {
@@ -59,9 +59,9 @@ export default class ProxyProcess implements Process {
     processData.status = ProcessStatus.failed;
     if (!this.concreteProcessInstance.onError) return;
 
-    console.log(`${this.processClass.name} - Chamando onError`);
+    console.log(`${this.processClass.name} - Chamando onError()`);
     this.concreteProcessInstance.onError(error, pipelineData);
-    console.log(`${this.processClass.name} - onError Finalizado`);
+    console.log(`${this.processClass.name} - onError() Finalizado`);
   }
 
   async onFinally?(pipelineData: PipelineData<any>) {
@@ -74,28 +74,25 @@ export default class ProxyProcess implements Process {
 
     if (!this.concreteProcessInstance.onFinally) return;
 
-    console.log(`${this.processClass.name} - Chamando onFinally`);
+    console.log(`${this.processClass.name} - Chamando onFinally()`);
     this.concreteProcessInstance.onFinally(pipelineData);
-    console.log(`${this.processClass.name} - onFinally Finalizado`);
+    console.log(`${this.processClass.name} - onFinally() Finalizado`);
   }
 
   async onProcess(pipelineData: PipelineData<any>) {
     const processData = this.getThisProcessData(pipelineData)
     processData.status = ProcessStatus.processing;
     try {
-      console.log(`------------------------------------------------`);
       if (this.onStart) this.onStart(pipelineData);
 
-      console.log(`${this.processClass.name} - Chamando onProcess`);
+      console.log(`${this.processClass.name} - Chamando onProcess()`);
       const result = await this.concreteProcessInstance.onProcess(pipelineData);
 
       processData.data = result;
-
-
-      console.log(`${this.processClass.name} - onProcess Finalizou!`);
+      console.log(`${this.processClass.name} - onProcess() Finalizou!`);
 
       if (this.onFinish) this.onFinish(pipelineData);
-
+      console.log(`------------------------------------------------`);
       if (this.next) await this.next.onProcess(pipelineData);
     } catch (err: any) {
       console.error(err);
