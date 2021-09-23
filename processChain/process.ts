@@ -15,6 +15,7 @@ export interface ProcessData<T> {
   processDate?: Date;
   finishDate?: Date;
   data?: T;
+  error?: any; 
 }
 
 

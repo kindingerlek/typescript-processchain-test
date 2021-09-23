@@ -96,6 +96,7 @@ export default class ProxyProcess implements Process {
       if (this.next) await this.next.onProcess(pipelineData);
     } catch (err: any) {
       console.error(err);
+      processData.error = err
       if (this.onError) this.onError(err, pipelineData);
     } finally {
       if (this.onFinally) this.onFinally(pipelineData);
